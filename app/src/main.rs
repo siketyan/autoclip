@@ -25,17 +25,15 @@ pub(crate) type Result<T> = std::result::Result<T, Error>;
 
 fn main() -> Result<()> {
     let mut plugins = PluginCollection::new();
-    let path = Path::new("./plugins")
-        .canonicalize()
-        .map_err(|e| Error::IO(e))?;
+    let path = Path::new("./plugins").canonicalize().map_err(Error::IO)?;
 
-    for entry in read_dir(&path).map_err(|e| Error::IO(e))? {
-        let entry = entry.map_err(|e| Error::IO(e))?;
+    for entry in read_dir(&path).map_err(Error::IO)? {
+        let entry = entry.map_err(Error::IO)?;
 
         unsafe {
             let plugin = plugins
                 .load(path.join(entry.path()))
-                .map_err(|e| Error::Plugin(e))?;
+                .map_err(Error::Plugin)?;
 
             println!(
                 "Plugin Loaded: {} ({})",

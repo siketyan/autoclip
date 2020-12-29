@@ -44,7 +44,7 @@ impl PluginCollection {
 
         let declaration = library
             .get::<*mut PluginDeclaration>(b"plugin_declaration")
-            .map_err(|e| Error::LibLoading(e))?
+            .map_err(Error::LibLoading)?
             .read();
 
         if check_version(&declaration) {

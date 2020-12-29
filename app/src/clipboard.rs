@@ -25,7 +25,7 @@ impl Clipboard {
     }
 
     pub(crate) fn get_sequence_number(&self) -> Result<u32> {
-        Ok(seq_num().ok_or_else(|| Error::NoAccess)?.get())
+        Ok(seq_num().ok_or(Error::NoAccess)?.get())
     }
 
     pub(crate) fn read_text(&self) -> Result<String> {
@@ -33,7 +33,7 @@ impl Clipboard {
 
         clipboard_win::formats::Unicode
             .read_clipboard(&mut output)
-            .map_err(|e| Error::System(e))?;
+            .map_err(Error::System)?;
 
         Ok(output)
     }
@@ -41,6 +41,6 @@ impl Clipboard {
     pub(crate) fn write_text(&self, contents: &&str) -> Result<()> {
         clipboard_win::formats::Unicode
             .write_clipboard(contents)
-            .map_err(|e| Error::System(e))
+            .map_err(Error::System)
     }
 }
