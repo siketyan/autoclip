@@ -1,4 +1,6 @@
 # 📎 autoclip
+![Rust](https://github.com/siketyan/autoclip/workflows/Rust/badge.svg)
+
 Do something on your clipboard, automatically.
 
 ## ✨ Features
