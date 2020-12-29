@@ -1,0 +1,15 @@
+[package]
+name = "autoclip-app"
+version = "0.1.0"
+authors = ["Naoki Ikeguchi <root@siketyan.dev>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+autoclip-core = { path = "../core" }
+clipboard = "0.5.0"
+clipboard-win = "4.0.3"
+error-code = "2.0.2"
+libloading = "0.6.6"
+thiserror = "1.0.23"
