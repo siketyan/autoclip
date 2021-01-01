@@ -44,18 +44,11 @@ fn main() -> Result<()> {
     }
 
     let mut previous = String::new();
-    let mut sequence = 0u32;
 
     loop {
         sleep(Duration::from_secs(1));
 
-        let clipboard = Clipboard::open().map_err(Error::Clipboard)?;
-        let seq = clipboard.get_sequence_number().map_err(Error::Clipboard)?;
-
-        if seq == sequence {
-            continue;
-        }
-
+        let mut clipboard = Clipboard::open().map_err(Error::Clipboard)?;
         let contents = clipboard.read_text().map_err(Error::Clipboard)?;
 
         if contents == previous {
@@ -70,7 +63,5 @@ fn main() -> Result<()> {
             println!("Wrote: {} -> {}", contents, output);
             previous = output;
         }
-
-        sequence = seq;
     }
 }
