@@ -15,8 +15,8 @@ $ cargo build --release
 ## ☑ ToDo
 - OS Support
     - [x] Windows Support
-    - [ ] macOS Support
-    - [ ] Linux Support
+    - [x] macOS Support
+    - [x] Linux Support
 - Customisation
     - [ ] Polling Interval
 - [ ] Installer
