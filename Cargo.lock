@@ -15,7 +15,6 @@ version = "0.1.0"
 dependencies = [
  "autoclip-core",
  "clipboard",
- "clipboard-win 4.0.3",
  "error-code",
  "libloading",
  "thiserror",
@@ -60,7 +59,7 @@ version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "25a904646c0340239dcf7c51677b33928bf24fdf424b79a57909c0109075b2e7"
 dependencies = [
- "clipboard-win 2.2.0",
+ "clipboard-win",
  "objc",
  "objc-foundation",
  "objc_id",
@@ -73,17 +72,6 @@ version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3a093d6fed558e5fe24c3dfc85a68bb68f1c824f440d3ba5aca189e2998786b"
 dependencies = [
- "winapi",
-]
-
-[[package]]
-name = "clipboard-win"
-version = "4.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5123c6b97286809fea9e38d2c9bf530edbcb9fc0d8f8272c28b0c95f067fa92d"
-dependencies = [
- "error-code",
- "str-buf",
  "winapi",
 ]
 
