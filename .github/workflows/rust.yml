@@ -8,8 +8,14 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        platform:
+          - windows-latest
+          - macos-latest
+          - ubuntu-latest
 
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
 
