@@ -1,16 +1,19 @@
 mod clipboard;
 mod plugin;
 
-use std::fs::read_dir;
-use std::path::Path;
+use std::fs::{create_dir_all, read_dir};
 use std::thread::sleep;
 use std::time::Duration;
 
 use crate::clipboard::Clipboard;
 use crate::plugin::PluginCollection;
+use crate::Error::DataLocalDirNotFound;
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum Error {
+    #[error("local data directory not found")]
+    DataLocalDirNotFound,
+
     #[error("clipboard error")]
     Clipboard(crate::clipboard::Error),
 
@@ -25,7 +28,10 @@ pub(crate) type Result<T> = std::result::Result<T, Error>;
 
 fn main() -> Result<()> {
     let mut plugins = PluginCollection::new();
-    let path = Path::new("./plugins").canonicalize().map_err(Error::IO)?;
+    let path = dirs::data_local_dir()
+        .ok_or(DataLocalDirNotFound)?
+        .join("autoclip")
+        .join("plugins");
 
     for entry in read_dir(&path).map_err(Error::IO)? {
         let entry = entry.map_err(Error::IO)?;
