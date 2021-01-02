@@ -33,6 +33,10 @@ fn main() -> Result<()> {
         .join("autoclip")
         .join("plugins");
 
+    if !path.exists() {
+        create_dir_all(&path).map_err(Error::IO)?;
+    }
+
     for entry in read_dir(&path).map_err(Error::IO)? {
         let entry = entry.map_err(Error::IO)?;
 
