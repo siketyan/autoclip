@@ -2,6 +2,8 @@ mod clipboard;
 mod config;
 mod plugin;
 
+use clap::App;
+
 use std::fs::{create_dir_all, read_dir};
 use std::thread::sleep;
 use std::time::Duration;
@@ -34,22 +36,7 @@ pub(crate) enum Error {
 
 pub(crate) type Result<T> = std::result::Result<T, Error>;
 
-fn main() -> Result<()> {
-    let config_path = dirs::config_dir()
-        .ok_or(Error::ConfigDirNotFound)?
-        .join("autoclip")
-        .join("config.yaml");
-
-    let config = if config_path.exists() {
-        println!("Using config at {}", config_path.to_str().unwrap());
-
-        Config::load(&config_path).map_err(Error::Config)?
-    } else {
-        println!("Using the default config");
-
-        Config::new()
-    };
-
+fn run(config: &Config) -> Result<()> {
     let mut plugins = PluginCollection::new();
     let plugins_path = dirs::data_local_dir()
         .ok_or(DataLocalDirNotFound)?
@@ -96,5 +83,32 @@ fn main() -> Result<()> {
             println!("Wrote: {} -> {}", contents, output);
             previous = output;
         }
+    }
+}
+
+fn main() -> Result<()> {
+    let config_path = dirs::config_dir()
+        .ok_or(Error::ConfigDirNotFound)?
+        .join("autoclip")
+        .join("config.yaml");
+
+    let config = if config_path.exists() {
+        println!("Using config at {}", config_path.to_str().unwrap());
+
+        Config::load(&config_path).map_err(Error::Config)?
+    } else {
+        println!("Using the default config");
+
+        Config::new()
+    };
+
+    let matches = App::new("autoclip")
+        .version(env!("CARGO_PKG_VERSION"))
+        .author(env!("CARGO_PKG_AUTHORS"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
+        .get_matches();
+
+    match matches.subcommand_name() {
+        _ => run(&config),
     }
 }
