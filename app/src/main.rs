@@ -41,8 +41,12 @@ fn main() -> Result<()> {
         .join("config.yaml");
 
     let config = if config_path.exists() {
+        println!("Using config at {}", config_path.to_str().unwrap());
+
         Config::load(&config_path).map_err(Error::Config)?
     } else {
+        println!("Using the default config");
+
         Config::new()
     };
 
