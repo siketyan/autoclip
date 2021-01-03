@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 autoclip-core = { path = "../core" }
+clap = "2.33.3"
 clipboard = "0.5.0"
 dirs = "3.0.1"
 error-code = "2.0.2"
