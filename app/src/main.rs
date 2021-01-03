@@ -1,15 +1,18 @@
 mod clipboard;
 mod config;
+mod installer;
 mod plugin;
 
-use clap::App;
+use clap::{App, Arg, SubCommand};
 
 use std::fs::{create_dir_all, read_dir};
+use std::path::PathBuf;
 use std::thread::sleep;
 use std::time::Duration;
 
 use crate::clipboard::Clipboard;
 use crate::config::Config;
+use crate::installer::Installer;
 use crate::plugin::PluginCollection;
 use crate::Error::DataLocalDirNotFound;
 
@@ -27,6 +30,9 @@ pub(crate) enum Error {
     #[error("config error")]
     Config(crate::config::Error),
 
+    #[error("installer error")]
+    Installer(crate::installer::Error),
+
     #[error("plugin error")]
     Plugin(crate::plugin::Error),
 
@@ -36,18 +42,10 @@ pub(crate) enum Error {
 
 pub(crate) type Result<T> = std::result::Result<T, Error>;
 
-fn run(config: &Config) -> Result<()> {
+fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
     let mut plugins = PluginCollection::new();
-    let plugins_path = dirs::data_local_dir()
-        .ok_or(DataLocalDirNotFound)?
-        .join("autoclip")
-        .join("plugins");
 
-    if !plugins_path.exists() {
-        create_dir_all(&plugins_path).map_err(Error::IO)?;
-    }
-
-    for entry in read_dir(&plugins_path).map_err(Error::IO)? {
+    for entry in read_dir(plugins_path).map_err(Error::IO)? {
         let entry = entry.map_err(Error::IO)?;
 
         unsafe {
@@ -102,13 +100,39 @@ fn main() -> Result<()> {
         Config::new()
     };
 
+    let plugins_path = dirs::data_local_dir()
+        .ok_or(DataLocalDirNotFound)?
+        .join("autoclip")
+        .join("plugins");
+
+    if !plugins_path.exists() {
+        create_dir_all(&plugins_path).map_err(Error::IO)?;
+    }
+
     let matches = App::new("autoclip")
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
+        .subcommand(
+            SubCommand::with_name("install")
+                .about("Installs a plugin.")
+                .arg(Arg::with_name("plugin_name").required(true)),
+        )
         .get_matches();
 
     match matches.subcommand_name() {
-        _ => run(&config),
+        Some("install") => {
+            let installer = Installer::new(None);
+            let plugin_name = matches
+                .subcommand_matches("install")
+                .unwrap()
+                .value_of("plugin_name")
+                .unwrap();
+
+            installer
+                .install(plugin_name, &plugins_path)
+                .map_err(Error::Installer)
+        }
+        _ => run(&config, &plugins_path),
     }
 }
