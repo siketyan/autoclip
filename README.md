@@ -29,4 +29,4 @@ $ cargo build --release
 - Customisation
     - [x] Polling Interval
 - [ ] Installer
-- [ ] Plugin Installer
+- [x] Plugin Installer
