@@ -27,6 +27,6 @@ $ cargo build --release
     - [x] macOS Support
     - [x] Linux Support
 - Customisation
-    - [ ] Polling Interval
+    - [x] Polling Interval
 - [ ] Installer
 - [ ] Plugin Installer
