@@ -83,7 +83,7 @@ jobs:
           path: ./artifacts/
 
       - name: Copy plugins
-        shell: /bin/bash
+        shell: bash
         run: |
           shopt -s globstar
           cp ./artifacts/**/{*.dll,*.dylib,*.so} ./public/
