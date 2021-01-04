@@ -19,18 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install GNU tar
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          brew install gnu-tar
+          echo "/usr/local/opt/gnu-tar/libexec/gnubin" >> $GITHUB_PATH
+
       - uses: actions/cache@v2
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v4
-
-      - uses: actions/cache@v2
-        if: ${{ runner.os != 'macOS' }}
-        with:
-          path: target
-          key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}-v4
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v5
 
       - name: Install platform-specific dependencies
         if: ${{ runner.os == 'Linux' }}
