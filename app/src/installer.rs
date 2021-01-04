@@ -177,5 +177,9 @@ fn plugin_extension() -> &'static str {
     #[cfg(windows)]
     return "dll";
 
+    #[cfg(target_os = "macos")]
+    return "dylib";
+
+    #[allow(dead_code)]
     "so"
 }
