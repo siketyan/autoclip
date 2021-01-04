@@ -69,6 +69,13 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
+          name: 'app-${{ matrix.platform }}'
+          path: |
+            ./target/release/autoclip-app.exe
+            ./target/release/autoclip-app
+
+      - uses: actions/upload-artifact@v2
+        with:
           name: 'plugins-${{ matrix.platform }}'
           path: |
             ./target/release/*.dll
@@ -87,14 +94,7 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          path: ./artifacts/
-
-      - name: Copy plugins
-        shell: bash
-        run: |
-          shopt -s globstar
-          mkdir -p ./public/plugins/
-          cp ./artifacts/**/{*.dll,*.dylib,*.so} ./public/plugins/
+          path: ./public/artifacts/
 
       - name: Setup Git
         run: |
