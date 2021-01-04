@@ -19,13 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install GNU tar
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          brew install gnu-tar
+          echo "/usr/local/opt/gnu-tar/libexec/gnubin" >> $GITHUB_PATH
+
       - uses: actions/cache@v2
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v3
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-v5
 
       - name: Install platform-specific dependencies
         if: ${{ runner.os == 'Linux' }}
@@ -42,7 +48,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --verbose
+          args: --verbose --release
 
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
@@ -60,3 +66,43 @@ jobs:
         with:
           command: test
           args: --verbose
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: 'plugins-${{ matrix.platform }}'
+          path: |
+            ./target/release/*.dll
+            ./target/release/*.dylib
+            ./target/release/*.so
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./public/
+
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./artifacts/
+
+      - name: Copy plugins
+        shell: bash
+        run: |
+          shopt -s globstar
+          mkdir -p ./public/plugins/
+          cp ./artifacts/**/{*.dll,*.dylib,*.so} ./public/plugins/
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "${{ github.event.pusher.name }}"
+          git config --global user.email "${{ github.event.pusher.email }}"
+
+      - name: Commit & Push
+        working-directory: ./public/
+        run: |
+          git add .
+          git commit -m "🚀 Publish ${{ github.sha }}"
+          git push origin gh-pages

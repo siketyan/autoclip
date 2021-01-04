@@ -20,6 +20,7 @@ error-code = "2.0.2"
 libloading = "0.6.6"
 reqwest = { version = "0.10.10", features = ["blocking"] }
 serde = { version = "1.0.118", features = ["derive"] }
+serde_derive = "1.0.118"
 serde_yaml = "0.8.14"
 thiserror = "1.0.23"
 url = "2.2.0"

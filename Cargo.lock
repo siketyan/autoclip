@@ -59,6 +59,7 @@ dependencies = [
  "libloading",
  "reqwest",
  "serde",
+ "serde_derive",
  "serde_yaml",
  "thiserror",
  "url",
