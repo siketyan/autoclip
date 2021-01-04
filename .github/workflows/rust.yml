@@ -92,7 +92,8 @@ jobs:
         shell: bash
         run: |
           shopt -s globstar
-          cp ./artifacts/**/{*.dll,*.dylib,*.so} ./public/
+          mkdir -p ./public/plugins/
+          cp ./artifacts/**/{*.dll,*.dylib,*.so} ./public/plugins/
 
       - name: Setup Git
         run: |
