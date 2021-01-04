@@ -108,7 +108,6 @@ struct Manifest {
     name: String,
     description: String,
     author: Author,
-    version: String,
     variants: Vec<Variant>,
 }
 
