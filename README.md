@@ -27,7 +27,7 @@ $ ./autoclip-app install [name]
     - Linux: `/home/[your_name]/.local/share`
 1. Now go into `autoclip` directory, then `plugins` .
     - If the directories not exists, create them.
-1. Put the `.dll`, '.dylib' or `.so` files of plugins into the `plugins` directory.
+1. Put the `.dll`, `.dylib` or `.so` files of plugins into the `plugins` directory.
 
 ## ☑ ToDo
 - OS Support
