@@ -29,6 +29,29 @@ $ ./autoclip-app install [name]
     - If the directories not exists, create them.
 1. Put the `.dll`, `.dylib` or `.so` files of plugins into the `plugins` directory.
 
+## 🔧 Developing Plugins
+1. Setup your Rust environment.
+1. Create a new lib crate.
+   ```console
+   $ cargo new --lib plugin-name-of-your-plugin
+   ```
+1. Configure Cargo.toml, changing the crate type to `cdylib`.
+   ```toml
+   [lib]
+   crate-type = ["cdylib"]
+   ```
+1. Add `autoclip-core` as a dependency.
+   ```toml
+   [dependencies]
+   autoclip-core = "0.1.0"
+   ```
+1. Implement `AutoclipPlugin` trait as you like.
+1. Export the plugin with a macro:
+   ```rust
+   autoclip_core::export_plugin!("name-of-your-plugin");
+   ```
+1. Build & distribute `.dll`, `.dylib` and `.so` files!
+
 ## ☑ ToDo
 - OS Support
     - [x] Windows Support
