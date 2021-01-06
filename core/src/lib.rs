@@ -17,13 +17,18 @@ pub trait PluginRegistrar {
 
 #[macro_export]
 macro_rules! export_plugin {
-    ($register:expr) => {
+    ($name:expr) => {
         #[doc(hidden)]
         #[no_mangle]
         pub static plugin_declaration: $crate::PluginDeclaration = $crate::PluginDeclaration {
             rustc_version: $crate::RUSTC_VERSION,
             core_version: $crate::CORE_VERSION,
-            register: $register,
+            register,
         };
+
+        #[allow(improper_ctypes_definitions)]
+        extern "C" fn register(registrar: &mut dyn PluginRegistrar) {
+            registrar.register($name, Box::new(AutoclipPluginAmazon));
+        }
     };
 }
