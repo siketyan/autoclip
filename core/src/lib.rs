@@ -36,7 +36,7 @@ pub trait PluginRegistrar {
 /// Using only this macro, each plugin can integrate with the app easily.
 #[macro_export]
 macro_rules! export_plugin {
-    ($name:expr) => {
+    ($name:expr, $implementation:expr) => {
         #[doc(hidden)]
         #[no_mangle]
         pub static plugin_declaration: $crate::PluginDeclaration = $crate::PluginDeclaration {
@@ -47,7 +47,7 @@ macro_rules! export_plugin {
 
         #[allow(improper_ctypes_definitions)]
         extern "C" fn register(registrar: &mut dyn PluginRegistrar) {
-            registrar.register($name, Box::new(AutoclipPluginAmazon));
+            registrar.register($name, Box::new($implementation));
         }
     };
 }

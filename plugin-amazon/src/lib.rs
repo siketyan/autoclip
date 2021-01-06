@@ -1,7 +1,7 @@
 use autoclip_core::{AutoclipPlugin, PluginRegistrar};
 use regex::Regex;
 
-autoclip_core::export_plugin!("amazon");
+autoclip_core::export_plugin!("amazon", AutoclipPluginAmazon);
 
 pub struct AutoclipPluginAmazon;
 
