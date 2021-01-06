@@ -1,12 +1,7 @@
 use autoclip_core::{AutoclipPlugin, PluginRegistrar};
 use regex::Regex;
 
-#[allow(improper_ctypes_definitions)]
-extern "C" fn register(registrar: &mut dyn PluginRegistrar) {
-    registrar.register("amazon", Box::new(AutoclipPluginAmazon));
-}
-
-autoclip_core::export_plugin!(register);
+autoclip_core::export_plugin!("amazon", AutoclipPluginAmazon);
 
 pub struct AutoclipPluginAmazon;
 
