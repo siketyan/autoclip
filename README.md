@@ -48,7 +48,7 @@ $ ./autoclip-app install [name]
 1. Implement `AutoclipPlugin` trait as you like.
 1. Export the plugin with a macro:
    ```rust
-   autoclip_core::export_plugin!("name-of-your-plugin");
+   autoclip_core::export_plugin!("name-of-your-plugin", AutoclipPluginImpl);
    ```
 1. Build & distribute `.dll`, `.dylib` and `.so` files!
 
