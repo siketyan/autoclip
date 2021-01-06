@@ -1,6 +1,11 @@
 [package]
 name = "autoclip-core"
+description = "The core crate to develop plugins for autoclip."
 version = "0.1.0"
+license = "MIT"
+readme = "https://github.com/siketyan/autoclip#readme"
+homepage = "https://github.com/siketyan/autoclip"
+repository = "https://github.com/siketyan/autoclip.git"
 authors = ["Naoki Ikeguchi <root@siketyan.dev>"]
 edition = "2018"
 
