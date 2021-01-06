@@ -180,6 +180,6 @@ fn plugin_extension() -> &'static str {
     #[cfg(target_os = "macos")]
     return "dylib";
 
-    #[allow(dead_code)]
+    #[allow(unreachable_code)]
     "so"
 }
