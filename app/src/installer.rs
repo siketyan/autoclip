@@ -20,7 +20,7 @@ pub(crate) enum Error {
     SupportedVariantNotFound,
 
     #[error("registry error")]
-    Registry(Response),
+    Registry(Box<Response>),
 
     #[error("HTTP error")]
     Http(#[from] reqwest::Error),
@@ -145,7 +145,7 @@ impl Installer {
         match response.status() {
             StatusCode::OK => serde_yaml::from_reader(response).map_err(Error::Yaml),
             StatusCode::NOT_FOUND => Err(Error::PluginNotFound),
-            _ => Err(Error::Registry(response)),
+            _ => Err(Error::Registry(Box::new(response))),
         }
     }
 
@@ -180,6 +180,6 @@ fn plugin_extension() -> &'static str {
     #[cfg(target_os = "macos")]
     return "dylib";
 
-    #[allow(dead_code)]
+    #[allow(unreachable_code)]
     "so"
 }
