@@ -24,19 +24,19 @@ pub(crate) enum Error {
     #[error("local data directory not found")]
     DataLocalDirNotFound,
 
-    #[error("clipboard error")]
+    #[error("clipboard error: {0}")]
     Clipboard(#[from] crate::clipboard::Error),
 
-    #[error("config error")]
+    #[error("config error: {0}")]
     Config(#[from] crate::config::Error),
 
-    #[error("installer error")]
+    #[error("installer error: {0}")]
     Installer(#[from] crate::installer::Error),
 
-    #[error("plugin error")]
+    #[error("plugin error: {0}")]
     Plugin(#[from] crate::plugin::Error),
 
-    #[error("I/O error")]
+    #[error("I/O error: {0}")]
     IO(#[from] std::io::Error),
 }
 

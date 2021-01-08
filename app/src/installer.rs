@@ -22,16 +22,16 @@ pub(crate) enum Error {
     #[error("registry error")]
     Registry(Box<Response>),
 
-    #[error("HTTP error")]
+    #[error("HTTP error: {0}")]
     Http(#[from] reqwest::Error),
 
-    #[error("I/O error")]
+    #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
 
-    #[error("URL error")]
+    #[error("URL error: {0}")]
     Url(#[from] url::ParseError),
 
-    #[error("YAML error")]
+    #[error("YAML error: {0}")]
     Yaml(#[from] serde_yaml::Error),
 }
 
