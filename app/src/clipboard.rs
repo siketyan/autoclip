@@ -2,7 +2,7 @@ use clipboard::{ClipboardContext, ClipboardProvider};
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum Error {
-    #[error("std error: {0}")]
+    #[error(transparent)]
     Std(Box<dyn std::error::Error>),
 }
 
