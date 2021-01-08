@@ -7,6 +7,7 @@ use clap::{App, Arg, SubCommand};
 
 use std::fs::{create_dir_all, read_dir};
 use std::path::PathBuf;
+use std::process::exit;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -24,20 +25,20 @@ pub(crate) enum Error {
     #[error("local data directory not found")]
     DataLocalDirNotFound,
 
-    #[error("clipboard error")]
-    Clipboard(crate::clipboard::Error),
+    #[error("clipboard error: {0}")]
+    Clipboard(#[from] crate::clipboard::Error),
 
-    #[error("config error")]
-    Config(crate::config::Error),
+    #[error("config error: {0}")]
+    Config(#[from] crate::config::Error),
 
-    #[error("installer error")]
-    Installer(crate::installer::Error),
+    #[error("installer error: {0}")]
+    Installer(#[from] crate::installer::Error),
 
-    #[error("plugin error")]
-    Plugin(crate::plugin::Error),
+    #[error("plugin error: {0}")]
+    Plugin(#[from] crate::plugin::Error),
 
-    #[error("I/O error")]
-    IO(std::io::Error),
+    #[error("I/O error: {0}")]
+    IO(#[from] std::io::Error),
 }
 
 pub(crate) type Result<T> = std::result::Result<T, Error>;
@@ -84,7 +85,7 @@ fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
     }
 }
 
-fn main() -> Result<()> {
+fn execute() -> Result<()> {
     let config_path = dirs::config_dir()
         .ok_or(Error::ConfigDirNotFound)?
         .join("autoclip")
@@ -134,5 +135,12 @@ fn main() -> Result<()> {
                 .map_err(Error::Installer)
         }
         _ => run(&config, &plugins_path),
+    }
+}
+
+fn main() {
+    if let Err(error) = execute() {
+        eprintln!("Error: {}", error);
+        exit(1);
     }
 }

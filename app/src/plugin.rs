@@ -6,8 +6,8 @@ use std::rc::Rc;
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum Error {
-    #[error("libloading error")]
-    LibLoading(libloading::Error),
+    #[error("libloading error: {0}")]
+    LibLoading(#[from] libloading::Error),
 
     #[error("version mismatch")]
     Version,
