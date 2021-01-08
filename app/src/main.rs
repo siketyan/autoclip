@@ -25,19 +25,19 @@ pub(crate) enum Error {
     DataLocalDirNotFound,
 
     #[error("clipboard error")]
-    Clipboard(crate::clipboard::Error),
+    Clipboard(#[from] crate::clipboard::Error),
 
     #[error("config error")]
-    Config(crate::config::Error),
+    Config(#[from] crate::config::Error),
 
     #[error("installer error")]
-    Installer(crate::installer::Error),
+    Installer(#[from] crate::installer::Error),
 
     #[error("plugin error")]
-    Plugin(crate::plugin::Error),
+    Plugin(#[from] crate::plugin::Error),
 
     #[error("I/O error")]
-    IO(std::io::Error),
+    IO(#[from] std::io::Error),
 }
 
 pub(crate) type Result<T> = std::result::Result<T, Error>;
