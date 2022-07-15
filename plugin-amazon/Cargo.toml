@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 autoclip-core = { path = "../core" }
-regex = "1.4.2"
+regex = "1.4"

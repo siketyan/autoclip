@@ -13,14 +13,14 @@ edition = "2018"
 
 [dependencies]
 autoclip-core = { path = "../core" }
-clap = "2.33.3"
-clipboard = "0.5.0"
-dirs = "3.0.1"
-error-code = "2.0.2"
-libloading = "0.6.6"
-reqwest = { version = "0.10.10", features = ["blocking"] }
-serde = { version = "1.0.118", features = ["derive"] }
-serde_derive = "1.0.118"
-serde_yaml = "0.8.14"
-thiserror = "1.0.23"
-url = "2.2.0"
+clap = "3.2"
+clipboard = "0.5"
+dirs = "4.0"
+error-code = "2.0"
+libloading = "0.7"
+reqwest = { version = "0.11", features = ["blocking"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_derive = "1.0"
+serde_yaml = "0.8"
+thiserror = "1.0"
+url = "2.2"

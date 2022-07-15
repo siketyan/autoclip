@@ -2,10 +2,9 @@ use reqwest::{
     blocking::{Client, Response},
     StatusCode, Url,
 };
-use serde::export::Formatter;
 use serde::Deserialize;
 
-use std::fmt::Display;
+use std::fmt::{Display, Formatter};
 use std::fs::File;
 use std::io::{copy, BufReader, BufWriter};
 use std::path::PathBuf;
