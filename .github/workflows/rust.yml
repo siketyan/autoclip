@@ -11,9 +11,9 @@ jobs:
     strategy:
       matrix:
         platform:
-          - windows-latest
-          - macos-latest
-          - ubuntu-latest
+          - windows-2022
+          - macos-12
+          - ubuntu-22.04
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install platform-specific dependencies
         if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get install xorg-dev libxcb-shape0-dev libxcb-xfixes0-dev
+        run: sudo apt-get -y update && sudo apt-get -y install xorg-dev libxcb-shape0-dev libxcb-xfixes0-dev
 
       - name: Install latest stable
         uses: actions-rs/toolchain@v1
