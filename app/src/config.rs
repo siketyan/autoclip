@@ -17,12 +17,20 @@ type Result<T> = std::result::Result<T, Error>;
 #[derive(Deserialize, Serialize)]
 pub(crate) struct Config {
     pub(crate) polling_interval: u64,
+    pub(crate) ignored_types: Vec<String>,
 }
 
 impl Config {
     pub(crate) fn new() -> Self {
         Self {
             polling_interval: 1000,
+            // inspired by Maccy's default configuration
+            ignored_types: vec![
+                "com.agilebits.onepassword".to_owned(),
+                "com.typeit4me.clipping".to_owned(),
+                "de.petermaurer.TransientPasteboardType".to_owned(),
+                "net.antelle.keeweb".to_owned(),
+            ],
         }
     }
 
