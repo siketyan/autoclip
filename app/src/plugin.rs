@@ -43,8 +43,7 @@ impl PluginCollection {
         let library = Rc::new(Library::new(library_path).expect("lib load"));
 
         let declaration = library
-            .get::<*mut PluginDeclaration>(b"plugin_declaration")
-            .map_err(Error::LibLoading)?
+            .get::<*mut PluginDeclaration>(b"plugin_declaration")?
             .read();
 
         if check_version(&declaration) {

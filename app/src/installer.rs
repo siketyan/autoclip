@@ -7,7 +7,7 @@ use serde::Deserialize;
 use std::fmt::{Display, Formatter};
 use std::fs::File;
 use std::io::{copy, BufReader, BufWriter};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 #[derive(Debug, thiserror::Error)]
@@ -136,19 +136,22 @@ impl Installer {
     }
 
     fn fetch_manifest(&self, name: &str) -> Result<Manifest> {
-        let mut url = Url::from_str(&self.registry).map_err(Error::Url)?;
+        let mut url = Url::from_str(&self.registry)?;
 
         url.set_path(&format!("/{}.yaml", name));
 
-        let response = self.client.get(url).send().map_err(Error::Http)?;
+        let response = self.client.get(url).send()?;
         match response.status() {
-            StatusCode::OK => serde_yaml::from_reader(response).map_err(Error::Yaml),
+            StatusCode::OK => serde_yaml::from_reader(response).map_err(|e| e.into()),
             StatusCode::NOT_FOUND => Err(Error::PluginNotFound),
             _ => Err(Error::Registry(Box::new(response))),
         }
     }
 
-    pub(crate) fn install(&self, name: &str, to: &PathBuf) -> Result<()> {
+    pub(crate) fn install<P>(&self, name: &str, to: P) -> Result<()>
+    where
+        P: AsRef<Path>,
+    {
         let manifest = self.fetch_manifest(name)?;
         let variant = manifest
             .find_supported_variant()
@@ -159,9 +162,9 @@ impl Installer {
             manifest.name, manifest.author, variant.url,
         );
 
-        let response = self.client.get(&variant.url).send().map_err(Error::Http)?;
+        let response = self.client.get(&variant.url).send()?;
         let filename = format!("{}.{}", manifest.name, plugin_extension());
-        let file = File::create(to.join(filename)).map_err(Error::Io)?;
+        let file = File::create(PathBuf::from(to.as_ref()).join(filename))?;
 
         let mut reader = BufReader::new(response);
         let mut writer = BufWriter::new(file);

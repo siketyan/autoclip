@@ -26,16 +26,16 @@ pub(crate) enum Error {
     DataLocalDirNotFound,
 
     #[error("clipboard error: {0}")]
-    Clipboard(#[from] crate::clipboard::Error),
+    Clipboard(#[from] clipboard::Error),
 
     #[error("config error: {0}")]
-    Config(#[from] crate::config::Error),
+    Config(#[from] config::Error),
 
     #[error("installer error: {0}")]
-    Installer(#[from] crate::installer::Error),
+    Installer(#[from] installer::Error),
 
     #[error("plugin error: {0}")]
-    Plugin(#[from] crate::plugin::Error),
+    Plugin(#[from] plugin::Error),
 
     #[error("I/O error: {0}")]
     IO(#[from] std::io::Error),
@@ -46,8 +46,8 @@ pub(crate) type Result<T> = std::result::Result<T, Error>;
 fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
     let mut plugins = PluginCollection::new();
 
-    for entry in read_dir(plugins_path).map_err(Error::IO)? {
-        let entry = entry.map_err(Error::IO)?;
+    for entry in read_dir(plugins_path)? {
+        let entry = entry?;
 
         unsafe {
             let plugin = plugins
@@ -67,8 +67,8 @@ fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
     loop {
         sleep(Duration::from_millis(config.polling_interval));
 
-        let mut clipboard = Clipboard::open().map_err(Error::Clipboard)?;
-        let contents = clipboard.read_text().map_err(Error::Clipboard)?;
+        let mut clipboard = Clipboard::open()?;
+        let contents = clipboard.read_text()?;
 
         if contents == previous {
             continue;
@@ -94,7 +94,7 @@ fn execute() -> Result<()> {
     let config = if config_path.exists() {
         println!("Using config at {}", config_path.to_str().unwrap());
 
-        Config::load(&config_path).map_err(Error::Config)?
+        Config::load(&config_path)?
     } else {
         println!("Using the default config");
 
@@ -107,7 +107,7 @@ fn execute() -> Result<()> {
         .join("plugins");
 
     if !plugins_path.exists() {
-        create_dir_all(&plugins_path).map_err(Error::IO)?;
+        create_dir_all(&plugins_path)?;
     }
 
     let matches = App::new("autoclip")
@@ -132,7 +132,7 @@ fn execute() -> Result<()> {
 
             installer
                 .install(plugin_name, &plugins_path)
-                .map_err(Error::Installer)
+                .map_err(|e| e.into())
         }
         _ => run(&config, &plugins_path),
     }

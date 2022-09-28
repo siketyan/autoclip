@@ -14,7 +14,7 @@ edition = "2018"
 [dependencies]
 autoclip-core = { path = "../core" }
 clap = "3.2"
-clipboard = "0.5"
+arboard = "3.1"
 dirs = "4.0"
 error-code = "2.0"
 libloading = "0.7"
