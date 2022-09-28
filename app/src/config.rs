@@ -27,9 +27,9 @@ impl Config {
     }
 
     pub(crate) fn load(path: &PathBuf) -> Result<Self> {
-        let file = File::open(path).map_err(Error::Io)?;
+        let file = File::open(path)?;
         let reader = BufReader::new(file);
 
-        serde_yaml::from_reader(reader).map_err(Error::Yaml)
+        serde_yaml::from_reader(reader).map_err(|e| e.into())
     }
 }
