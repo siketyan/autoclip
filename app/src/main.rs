@@ -1,6 +1,7 @@
 mod clipboard;
 mod config;
 mod installer;
+mod platform;
 mod plugin;
 
 use clap::{App, Arg, SubCommand};
@@ -33,6 +34,9 @@ pub(crate) enum Error {
 
     #[error("installer error: {0}")]
     Installer(#[from] installer::Error),
+
+    #[error("platform-specific error: {0}")]
+    Platform(#[from] platform::Error),
 
     #[error("plugin error: {0}")]
     Plugin(#[from] plugin::Error),
@@ -71,6 +75,16 @@ fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
         let contents = clipboard.read_text()?;
 
         if contents == previous {
+            continue;
+        }
+
+        previous = contents.clone();
+
+        // this only supports macOS now, so defaults to empty vec
+        let types = platform::get_clipboard_types().unwrap_or_default();
+        if let Some(ty) = types.iter().find(|ty| config.ignored_types.contains(ty)) {
+            println!("Ignoring type: {}", ty);
+
             continue;
         }
 
