@@ -1,3 +1,4 @@
+#[cfg(target_os = "macos")]
 mod macos;
 
 #[derive(Debug, thiserror::Error)]
