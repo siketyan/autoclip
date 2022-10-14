@@ -7,7 +7,7 @@ mod plugin;
 use clap::{App, Arg, SubCommand};
 
 use std::fs::{create_dir_all, read_dir};
-use std::path::{PathBuf, Path};
+use std::path::{Path, PathBuf};
 use std::process::exit;
 use std::thread::sleep;
 use std::time::Duration;
@@ -49,10 +49,17 @@ pub(crate) type Result<T> = std::result::Result<T, Error>;
 
 enum RunMode<'a> {
     Single(&'a Path),
-    All
+    All,
 }
 
-fn load_single_plugin<P>(plugins: &mut PluginCollection, plugins_path: &PathBuf, entry: P) -> Result<()> where P: AsRef<Path>  {
+fn load_single_plugin<P>(
+    plugins: &mut PluginCollection,
+    plugins_path: &PathBuf,
+    entry: P,
+) -> Result<()>
+where
+    P: AsRef<Path>,
+{
     unsafe {
         let plugin = plugins
             .load(plugins_path.join(entry.as_ref()))
@@ -167,16 +174,17 @@ fn execute() -> Result<()> {
             installer
                 .install(plugin_name, &plugins_path)
                 .map_err(|e| e.into())
-        },
+        }
         Some("single") => {
             let plugin_name = matches
                 .subcommand_matches("single")
                 .unwrap()
                 .value_of("plugin_name")
-                .unwrap().as_ref();
+                .unwrap()
+                .as_ref();
 
             run(&config, &plugins_path, RunMode::Single(plugin_name))
-        },
+        }
         _ => run(&config, &plugins_path, RunMode::All),
     }
 }
