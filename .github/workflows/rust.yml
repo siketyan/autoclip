@@ -24,12 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install GNU tar
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          brew install gnu-tar
-          echo "/usr/local/opt/gnu-tar/libexec/gnubin" >> $GITHUB_PATH
-
       - uses: actions/cache@v2
         with:
           path: |
