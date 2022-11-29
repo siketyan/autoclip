@@ -7,7 +7,7 @@ mod plugin;
 use clap::{App, Arg, SubCommand};
 
 use std::fs::{create_dir_all, read_dir};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::exit;
 use std::thread::sleep;
 use std::time::Duration;
@@ -47,22 +47,44 @@ pub(crate) enum Error {
 
 pub(crate) type Result<T> = std::result::Result<T, Error>;
 
-fn run(config: &Config, plugins_path: &PathBuf) -> Result<()> {
+enum RunMode<'a> {
+    Single(&'a Path),
+    All,
+}
+
+fn load_single_plugin<P>(
+    plugins: &mut PluginCollection,
+    plugins_path: &PathBuf,
+    entry: P,
+) -> Result<()>
+where
+    P: AsRef<Path>,
+{
+    unsafe {
+        let plugin = plugins
+            .load(plugins_path.join(entry.as_ref()))
+            .map_err(Error::Plugin)?;
+
+        println!(
+            "Plugin Loaded: {} ({})",
+            plugin.name,
+            entry.as_ref().file_name().unwrap().to_str().unwrap(),
+        );
+    }
+
+    Ok(())
+}
+
+fn run(config: &Config, plugins_path: &PathBuf, run_mode: RunMode) -> Result<()> {
     let mut plugins = PluginCollection::new();
 
-    for entry in read_dir(plugins_path)? {
-        let entry = entry?;
+    if let RunMode::Single(entry) = run_mode {
+        load_single_plugin(&mut plugins, plugins_path, entry)?;
+    } else {
+        for entry in read_dir(plugins_path)? {
+            let entry = entry?;
 
-        unsafe {
-            let plugin = plugins
-                .load(plugins_path.join(entry.path()))
-                .map_err(Error::Plugin)?;
-
-            println!(
-                "Plugin Loaded: {} ({})",
-                plugin.name,
-                entry.file_name().to_str().unwrap(),
-            );
+            load_single_plugin(&mut plugins, plugins_path, entry.path())?;
         }
     }
 
@@ -133,6 +155,11 @@ fn execute() -> Result<()> {
                 .about("Installs a plugin.")
                 .arg(Arg::with_name("plugin_name").required(true)),
         )
+        .subcommand(
+            SubCommand::with_name("single")
+                .about("Run a single plugin.")
+                .arg(Arg::with_name("plugin_name").required(true)),
+        )
         .get_matches();
 
     match matches.subcommand_name() {
@@ -148,7 +175,17 @@ fn execute() -> Result<()> {
                 .install(plugin_name, &plugins_path)
                 .map_err(|e| e.into())
         }
-        _ => run(&config, &plugins_path),
+        Some("single") => {
+            let plugin_name = matches
+                .subcommand_matches("single")
+                .unwrap()
+                .value_of("plugin_name")
+                .unwrap()
+                .as_ref();
+
+            run(&config, &plugins_path, RunMode::Single(plugin_name))
+        }
+        _ => run(&config, &plugins_path, RunMode::All),
     }
 }
 
