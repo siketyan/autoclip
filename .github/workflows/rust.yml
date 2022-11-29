@@ -1,7 +1,12 @@
 name: Rust
 
 on:
-  - push
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,12 +23,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install GNU tar
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          brew install gnu-tar
-          echo "/usr/local/opt/gnu-tar/libexec/gnubin" >> $GITHUB_PATH
 
       - uses: actions/cache@v2
         with:
