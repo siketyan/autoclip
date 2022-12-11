@@ -1,0 +1,23 @@
+[package]
+name = "autoclip-gui"
+description = "Cross-platform GUI frontend for autoclip, powered by Tauri."
+version = "0.1.0"
+license = "MIT"
+readme = "https://github.com/siketyan/autoclip#readme"
+homepage = "https://github.com/siketyan/autoclip"
+repository = "https://github.com/siketyan/autoclip.git"
+authors = ["Naoki Ikeguchi <me@s6n.jp>"]
+edition = "2021"
+rust-version = "1.57"
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+tauri = { version = "1.2", features = ["shell-open"] }
+
+[build-dependencies]
+tauri-build = { version = "1.2", features = [] }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

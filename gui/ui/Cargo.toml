@@ -1,0 +1,20 @@
+[package]
+name = "autoclip-gui-ui"
+description = "WASM-powered frontend UI for autoclip built with yew."
+version = "0.1.0"
+license = "MIT"
+readme = "https://github.com/siketyan/autoclip#readme"
+homepage = "https://github.com/siketyan/autoclip"
+repository = "https://github.com/siketyan/autoclip.git"
+authors = ["Naoki Ikeguchi <me@s6n.jp>"]
+edition = "2021"
+rust-version = "1.57"
+
+[dependencies]
+js-sys = "0.3.59"
+serde = { version = "1.0.140", features = ["derive"] }
+serde-wasm-bindgen = "0.4.3"
+wasm-bindgen = { version = "0.2.82", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4.32"
+web-sys = "0.3.59"
+yew = { version="0.20.0", features = ["csr"] }

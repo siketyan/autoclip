@@ -1,2 +1,2 @@
 [workspace]
-members = ["app", "core", "plugin-amazon"]
+members = ["app", "core", "gui", "gui/ui", "plugin-amazon"]
