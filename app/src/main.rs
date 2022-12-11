@@ -4,7 +4,7 @@ mod installer;
 mod platform;
 mod plugin;
 
-use clap::{App, Arg, SubCommand};
+use clap::{Arg, Command};
 
 use std::fs::{create_dir_all, read_dir};
 use std::path::{Path, PathBuf};
@@ -54,7 +54,7 @@ enum RunMode<'a> {
 
 fn load_single_plugin<P>(
     plugins: &mut PluginCollection,
-    plugins_path: &PathBuf,
+    plugins_path: &Path,
     entry: P,
 ) -> Result<()>
 where
@@ -146,19 +146,19 @@ fn execute() -> Result<()> {
         create_dir_all(&plugins_path)?;
     }
 
-    let matches = App::new("autoclip")
+    let matches = Command::new("autoclip")
         .version(env!("CARGO_PKG_VERSION"))
         .author(env!("CARGO_PKG_AUTHORS"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .subcommand(
-            SubCommand::with_name("install")
+            Command::new("install")
                 .about("Installs a plugin.")
-                .arg(Arg::with_name("plugin_name").required(true)),
+                .arg(Arg::new("plugin_name").required(true)),
         )
         .subcommand(
-            SubCommand::with_name("single")
+            Command::new("single")
                 .about("Run a single plugin.")
-                .arg(Arg::with_name("plugin_name").required(true)),
+                .arg(Arg::new("plugin_name").required(true)),
         )
         .get_matches();
 
@@ -168,7 +168,7 @@ fn execute() -> Result<()> {
             let plugin_name = matches
                 .subcommand_matches("install")
                 .unwrap()
-                .value_of("plugin_name")
+                .get_one::<String>("plugin_name")
                 .unwrap();
 
             installer
@@ -179,9 +179,8 @@ fn execute() -> Result<()> {
             let plugin_name = matches
                 .subcommand_matches("single")
                 .unwrap()
-                .value_of("plugin_name")
-                .unwrap()
-                .as_ref();
+                .get_one::<PathBuf>("plugin_name")
+                .unwrap();
 
             run(&config, &plugins_path, RunMode::Single(plugin_name))
         }
